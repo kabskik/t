@@ -4,9 +4,22 @@
 properties([[$class: 'BuildDiscarderProperty',
                 strategy: [$class: 'LogRotator', numToKeepStr: '10']]])
 
+def repo='https://github.com/jenkinsci/git-client-plugin'
+def branch="${env.BRANCH_NAME}"
+
 node {
   stage('Checkout') {
-    checkout scm
+    checkout([$class: 'GitSCM',
+              branches: [[name: branch]],
+              browser: [$class: 'GithubWeb', repoUrl: repo],
+              extensions: [
+                [$class: 'CloneOption', honorRefspec: false, noTags: false],
+                [$class: 'LocalBranch', localBranch: '**'],
+              ],
+              userRemoteConfigs: [[url: repo]]
+             ]
+            )
+    echo sh(returnStdout: true, script: 'env')
   }
 
   stage('Build') {
