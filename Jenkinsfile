@@ -19,7 +19,6 @@ node {
               userRemoteConfigs: [[url: repo]]
              ]
             )
-    echo sh(returnStdout: true, script: 'env')
   }
 
   stage('Build') {
